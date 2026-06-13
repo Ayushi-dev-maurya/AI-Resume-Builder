@@ -1,0 +1,596 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Resume Builder</title>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+        scroll-behavior: smooth;
+      }
+
+      body {
+        background: #f4f7fb;
+        color: #111827;
+        transition: 0.3s;
+      }
+
+      body.dark {
+        background: #0f172a;
+        color: white;
+      }
+
+      #theme-toggle {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1000;
+        border: none;
+        padding: 12px;
+        border-radius: 50%;
+        cursor: pointer;
+      }
+
+      nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 8%;
+        background: white;
+        position: sticky;
+        top: 0;
+        z-index: 999;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      }
+
+      body.dark nav {
+        background: #1e293b;
+      }
+
+      .logo {
+        font-size: 24px;
+        font-weight: 700;
+        color: #06b6d4;
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 25px;
+        list-style: none;
+      }
+
+      .nav-links a {
+        text-decoration: none;
+        color: inherit;
+        font-weight: 500;
+      }
+
+      .menu-btn {
+        display: none;
+        font-size: 28px;
+        cursor: pointer;
+      }
+
+      .hero {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 100px 8%;
+        gap: 50px;
+        min-height: 90vh;
+      }
+
+      .hero-content {
+        flex: 1;
+      }
+
+      .badge {
+        display: inline-block;
+        padding: 10px 18px;
+        background: #dbeafe;
+        border-radius: 30px;
+        margin-bottom: 20px;
+        font-size: 14px;
+      }
+
+      .hero h1 {
+        font-size: 60px;
+        line-height: 1.1;
+        margin-bottom: 20px;
+      }
+
+      .hero h1 span {
+        display: block;
+        color: #06b6d4;
+      }
+
+      .hero p {
+        font-size: 18px;
+        line-height: 1.8;
+        color: #64748b;
+        margin-bottom: 30px;
+      }
+
+      body.dark .hero p {
+        color: #cbd5e1;
+      }
+
+      .hero-buttons {
+        display: flex;
+        gap: 15px;
+      }
+
+      .btn {
+        padding: 15px 25px;
+        text-decoration: none;
+        border-radius: 10px;
+        font-weight: 600;
+      }
+
+      .primary {
+        background: #06b6d4;
+        color: white;
+      }
+
+      .secondary {
+        border: 2px solid #06b6d4;
+        color: #06b6d4;
+      }
+
+      .hero-card {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+      }
+
+      .resume-preview {
+        background: white;
+        padding: 30px;
+        width: 320px;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      }
+
+      .avatar {
+        width: 80px;
+        height: 80px;
+        background: #cbd5e1;
+        border-radius: 50%;
+        margin-bottom: 20px;
+      }
+
+      .line {
+        height: 12px;
+        background: #e2e8f0;
+        margin-bottom: 12px;
+        border-radius: 20px;
+      }
+
+      .short {
+        width: 60%;
+      }
+
+      .stats {
+        display: flex;
+        justify-content: center;
+        gap: 30px;
+        padding: 50px 8%;
+        flex-wrap: wrap;
+      }
+
+      .stat-box {
+        background: white;
+        padding: 30px;
+        border-radius: 15px;
+        text-align: center;
+        width: 220px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+      }
+
+      .features {
+        padding: 80px 8%;
+        text-align: center;
+      }
+
+      .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 25px;
+        margin-top: 40px;
+      }
+
+      .feature-card {
+        background: white;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+      }
+
+      .faq-section {
+        padding: 80px 8%;
+      }
+
+      .faq-item {
+        background: white;
+        padding: 20px;
+        margin-bottom: 15px;
+        border-radius: 10px;
+        cursor: pointer;
+      }
+
+      .answer {
+        display: none;
+        margin-top: 10px;
+      }
+
+      .answer.show {
+        display: block;
+      }
+
+      #contact {
+        padding: 80px 8%;
+        text-align: center;
+      }
+
+      form {
+        max-width: 500px;
+        margin: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      input {
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+      }
+
+      form button {
+        padding: 15px;
+        border: none;
+        background: #06b6d4;
+        color: white;
+        border-radius: 10px;
+        cursor: pointer;
+      }
+
+      footer {
+        padding: 30px;
+        text-align: center;
+      }
+
+      #topBtn {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        display: none;
+        padding: 15px;
+        border: none;
+        background: #06b6d4;
+        color: white;
+        border-radius: 50%;
+        cursor: pointer;
+      }
+
+      @media (max-width: 768px) {
+        .hero {
+          flex-direction: column;
+          text-align: center;
+        }
+
+        .hero h1 {
+          font-size: 42px;
+        }
+
+        .hero-buttons {
+          justify-content: center;
+        }
+
+        .menu-btn {
+          display: block;
+        }
+
+        .nav-links {
+          display: none;
+          position: absolute;
+          top: 70px;
+          left: 0;
+          width: 100%;
+          background: white;
+          flex-direction: column;
+          padding: 20px;
+        }
+
+        .nav-links.active {
+          display: flex;
+        }
+      }
+      .testimonials {
+        padding: 80px 8%;
+        text-align: center;
+      }
+
+      .testimonials h2 {
+        font-size: 40px;
+        margin-bottom: 40px;
+      }
+
+      .testimonial-card {
+        max-width: 700px;
+        margin: auto;
+        background: white;
+        padding: 40px;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        transition: 0.3s;
+      }
+
+      .testimonial-card:hover {
+        transform: translateY(-8px);
+      }
+
+      .stars {
+        font-size: 28px;
+        margin-bottom: 20px;
+      }
+
+      .testimonial-card p {
+        font-size: 18px;
+        line-height: 1.8;
+        color: #64748b;
+        margin-bottom: 20px;
+      }
+
+      .testimonial-card h4 {
+        color: #06b6d4;
+        margin-bottom: 5px;
+      }
+
+      .testimonial-card span {
+        color: #94a3b8;
+        font-size: 14px;
+      }
+
+      /* Dark Mode Support */
+
+      body.dark .testimonial-card {
+        background: #1e293b;
+      }
+
+      body.dark .testimonial-card p {
+        color: #cbd5e1;
+      }
+    </style>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <button id="theme-toggle">🌙</button>
+
+    <nav>
+      <div class="logo">ResumeAI</div>
+
+      <div class="menu-btn">☰</div>
+
+      <ul class="nav-links">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#features">Features</a></li>
+        <li><a href="#faq">FAQ</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+
+    <section class="hero" id="home">
+      <div class="hero-content">
+        <span class="badge"> ✨ AI-Powered Resume Creation </span>
+
+        <h1>
+          Build Your Dream Resume
+          <span>In Minutes</span>
+        </h1>
+
+        <p>
+          Create professional ATS-friendly resumes with AI suggestions, modern
+          templates and instant download.
+        </p>
+
+        <div class="hero-buttons">
+          <a href="#" class="btn primary"> Start Building </a>
+
+          <a href="#" class="btn secondary"> View Templates </a>
+        </div>
+      </div>
+
+      <div class="hero-card">
+        <div class="resume-preview">
+          <div class="avatar"></div>
+
+          <div class="line"></div>
+          <div class="line short"></div>
+
+          <div class="line"></div>
+          <div class="line"></div>
+
+          <div class="line short"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="stats">
+      <div class="stat-box">
+        <h2 id="resumeCount">0</h2>
+        <p>Resumes Created</p>
+      </div>
+
+      <div class="stat-box">
+        <h2>98%</h2>
+        <p>Success Rate</p>
+      </div>
+
+      <div class="stat-box">
+        <h2>50+</h2>
+        <p>Templates</p>
+      </div>
+    </section>
+
+    <section class="features" id="features">
+      <h2>Features</h2>
+
+      <div class="feature-grid">
+        <div class="feature-card">
+          <h3>🤖 AI Suggestions</h3>
+          <p>Smart content recommendations.</p>
+        </div>
+
+        <div class="feature-card">
+          <h3>⚡ Live Preview</h3>
+          <p>Real-time resume updates.</p>
+        </div>
+
+        <div class="feature-card">
+          <h3>📄 ATS Friendly</h3>
+          <p>Optimized for recruiters.</p>
+        </div>
+      </div>
+    </section>
+    <section class="testimonials">
+      <h2>Project Experience</h2>
+
+      <div class="testimonial-card">
+        <div class="stars">⭐⭐⭐⭐⭐</div>
+
+        <p>
+          "Creating this project helped me understand modern frontend
+          development and UI design."
+        </p>
+
+        <h4>– Ayushi Maurya</h4>
+
+        <span>Project Creator</span>
+      </div>
+    </section>
+
+    <section class="faq-section" id="faq">
+      <h2>Frequently Asked Questions</h2>
+
+      <div class="faq">
+        <div class="faq-item">
+          <h3 class="question">What is AI Resume Builder?</h3>
+
+          <p class="answer">It helps create professional resumes instantly.</p>
+        </div>
+
+        <div class="faq-item">
+          <h3 class="question">Is it free?</h3>
+
+          <p class="answer">Yes, basic templates are free.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact">
+      <h2>Contact Us</h2>
+
+      <form id="contactForm">
+        <input type="text" placeholder="Your Name" required />
+
+        <input type="email" id="email" placeholder="Email Address" required />
+
+        <button type="submit">Submit</button>
+      </form>
+    </section>
+
+    <footer>
+      <p>© 2026 ResumeAI. All Rights Reserved.</p>
+    </footer>
+
+    <button id="topBtn">↑</button>
+
+    <script>
+      // Mobile Menu
+
+      const menuBtn = document.querySelector(".menu-btn");
+
+      const navLinks = document.querySelector(".nav-links");
+
+      menuBtn.addEventListener("click", () => {
+        navLinks.classList.toggle("active");
+      });
+
+      // Dark Mode
+
+      const themeBtn = document.getElementById("theme-toggle");
+
+      themeBtn.addEventListener("click", () => {
+        document.body.classList.toggle("dark");
+      });
+
+      // FAQ Accordion
+
+      const questions = document.querySelectorAll(".question");
+
+      questions.forEach((q) => {
+        q.addEventListener("click", () => {
+          q.nextElementSibling.classList.toggle("show");
+        });
+      });
+
+      // Counter
+
+      let count = 0;
+
+      const counter = document.getElementById("resumeCount");
+
+      let interval = setInterval(() => {
+        count += 25;
+
+        counter.innerText = count + "+";
+
+        if (count >= 5000) {
+          clearInterval(interval);
+        }
+      }, 20);
+
+      // Contact Form
+
+      document.getElementById("contactForm").addEventListener("submit", (e) => {
+        const email = document.getElementById("email").value;
+
+        if (email === "") {
+          e.preventDefault();
+
+          alert("Please enter email");
+        }
+      });
+
+      // Back To Top
+
+      const topBtn = document.getElementById("topBtn");
+
+      window.addEventListener("scroll", () => {
+        if (window.scrollY > 300) {
+          topBtn.style.display = "block";
+        } else {
+          topBtn.style.display = "none";
+        }
+      });
+
+      topBtn.addEventListener("click", () => {
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth",
+        });
+      });
+    </script>
+  </body>
+</html>
