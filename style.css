@@ -17,16 +17,6 @@
         color: white;
       }
 
-      #theme-toggle {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        z-index: 1000;
-        border: none;
-        padding: 12px;
-        border-radius: 50%;
-        cursor: pointer;
-      }
 
       nav {
         display: flex;
